@@ -120,15 +120,123 @@ class SiteController extends Controller
      */
     public function actionContact()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
+        $invoiceData = [
+            [
+                'name' => "Ladies' Skinny Jeans ",
+                'quantity' => 2,
+                'rate' => 799,
+                'total' => 1598
+            ],
+            [
+                'name' => "Women's Floral Dress  ",
+                'quantity' => 1,
+                'rate' => 1299,
+                'total' => 1299
+            ],
+            [
+                'name' => "Printed Scarf",
+                'quantity' => 3,
+                'rate' => 199,
+                'total' => 597
+            ],
+            [
+                'name' => "Ladies' Skinny Jeans ",
+                'quantity' => 2,
+                'rate' => 799,
+                'total' => 1598
+            ],
+            [
+                'name' => "Women's Floral Dress  ",
+                'quantity' => 1,
+                'rate' => 1299,
+                'total' => 1299
+            ],
+            [
+                'name' => "Printed Scarf",
+                'quantity' => 3,
+                'rate' => 199,
+                'total' => 597
+            ],
+            [
+                'name' => "Ladies' Skinny Jeans ",
+                'quantity' => 2,
+                'rate' => 799,
+                'total' => 1598
+            ],
+            [
+                'name' => "Women's Floral Dress  ",
+                'quantity' => 1,
+                'rate' => 1299,
+                'total' => 1299
+            ],
+            [
+                'name' => "Printed Scarf",
+                'quantity' => 3,
+                'rate' => 199,
+                'total' => 597
+            ],
+            [
+                'name' => "Ladies' Skinny Jeans ",
+                'quantity' => 2,
+                'rate' => 799,
+                'total' => 1598
+            ],
+            [
+                'name' => "Women's Floral Dress  ",
+                'quantity' => 1,
+                'rate' => 1299,
+                'total' => 1299
+            ],
+            [
+                'name' => "Printed Scarf",
+                'quantity' => 3,
+                'rate' => 199,
+                'total' => 597
+            ],
+        ];
+        $customerData = [
+            'name' => 'Kasif Raza',
+            'Address' => '123 Main Street',
+            'City' =>  'Mumbai',
+            "State"=> "Maharashtra",
+            "Pin Code" =>  400001,
+            "Phone"=> "+91 9876543210",
+            "Email" => " emily.johnson@email.com"
+        ];
+        $paymentDetails = [
+            'Subtotal' => 3093,
+            'ShippingCharges' => 150,
+            'GST' => 556,
+            'TotalAmount' => 3799,
+            'PaymentMethod' => 'Cash',
+            'TransactionID'=> 'CC123',
+            'InvoiceNumber' => 'INV-2023-07-1234',
+            'Date' => '19th July 2023'
+        ];
+        $invoiceHtml = $this->renderPartial('contact', [
+            'invoiceData' => $invoiceData,
+            'customerData' => $customerData,
+            'paymentDetails' => $paymentDetails
         ]);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE, 
+            'format' => [80, 150], 
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'destination' => Pdf::DEST_BROWSER,
+            'filename' => 'invoice.pdf',
+            'content' => $invoiceHtml,
+            'cssInline' => '',
+            'options' => ['title' => 'Invoice'],
+            'methods' => [
+                'SetHeader' => ['Invoice Number: INV-2023-07-1234'],
+                'SetFooter' => ['|ZAKAAS CLOTHS|'],
+            ]
+        ]);
+        return $pdf->render();
+        // Preventing rendering of the default layout and view
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        Yii::$app->response->headers->remove('Content-Type');
+       
     }
 
     /**
